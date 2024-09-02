@@ -1,0 +1,19 @@
+CREATE TABLE rhe_dados_ferias_full(
+    ROWID bigint IDENTITY,
+    NUMFUNC int NULL,
+    NUMVINC int NULL,
+    DTINI date NULL,
+    DTFIM date NULL,
+    MESANOPAGTO varchar(50) NULL,
+    NRODIASPAGTO varchar(50) NULL,
+    DTINIPA date NULL,
+    DTFIMPA date NULL,
+    TOTALDIAS int NULL,
+    DIASVENDIDOS int NULL,
+    DIASGOZADOS int NULL,
+    SALDO int NULL,
+    OBS varchar(1020) NULL,
+    CREATED datetime NULL,
+    LASTUPDATED datetime NULL,
+    primary key (ROWID)
+);

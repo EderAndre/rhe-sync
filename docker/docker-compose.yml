@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  rhe-sync:
+    build:
+      context: ../
+      dockerfile: ./Dockerfile
+    volumes:
+      -  "/d/MIG/DPE/DEV/file/:/app/files/"
+

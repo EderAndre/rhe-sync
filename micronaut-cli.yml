@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: br.rs.gov.defensoria.rhe
+testFramework: kotest
+sourceLanguage: kotlin
+buildTool: gradle
+features: [app-name, data, data-jpa, email-javamail, flyway, gradle, hibernate-jpa, http-client-test, jackson-databind, jdbc-hikari, kapt, kotest, kotlin, kotlin-application, logback, management, micronaut-aot, micronaut-build, micronaut-http-validation, mysql, netty-server, reactor, readme, shade, static-resources, test-resources, validation, yaml, yaml-build]

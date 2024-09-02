@@ -1,0 +1,1 @@
+ALTER TABLE rhe_dados_vinculo ADD DTESTABILIDADE DATE;

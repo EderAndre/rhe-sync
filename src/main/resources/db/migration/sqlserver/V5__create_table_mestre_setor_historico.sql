@@ -1,0 +1,31 @@
+CREATE TABLE rhe_mestre_setor_historico(
+
+    EMP_CODIGO varchar(50) NOT NULL,
+    SETOR varchar(50) NOT NULL,
+    PAISETOR varchar(50) NULL,
+    NOMESETOR varchar(255) NULL,
+    NOMESETORLONGO varchar(255) NULL,
+    DATAINI date NULL,
+    SETOR_CORP varchar(50) NULL,
+    HLOCAL varchar(50) NULL,
+    TIPOSETOR varchar(50) NULL,
+    TIPOLOG varchar(50) NULL,
+    NOMELOG varchar(255) NULL,
+    NUMEROLOG varchar(50) NULL,
+    COMPLEMENTO varchar(50) NULL,
+    BAIRRO varchar(50) NULL,
+    CEP varchar(50) NULL,
+    CIDADE varchar(50) NULL,
+    UF varchar(50) NULL,
+    FONE varchar(50) NULL,
+    FAX varchar(50) NULL,
+    ORGANIZACAO varchar(50) NULL,
+    SIGLA varchar(50) NULL,
+    DATAFIM date NULL,
+    EXTINTO bit NULL,
+    EMAIL varchar(255) NULL,
+    CREATED datetime DEFAULT NULL,
+    LASTUPDATED datetime DEFAULT NULL,
+    PRIMARY KEY  (EMP_CODIGO,SETOR)
+);
+

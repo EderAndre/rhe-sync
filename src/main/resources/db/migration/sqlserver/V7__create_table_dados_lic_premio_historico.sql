@@ -1,0 +1,29 @@
+CREATE TABLE rhe_dados_lic_premio_historico(
+    ROWID bigint IDENTITY,
+    NUMFUNC int NULL,
+    NUMVINC int NULL,
+    DTINI date NULL,
+    DTPREVFIM date NULL,
+    DTFIM date NULL,
+    DTINIPA date NULL,
+    DTFIMPA date NULL,
+    OBS varchar(510) NULL,
+    CREATED datetime NULL,
+    LASTUPDATED datetime NULL,
+    primary key (ROWID)
+);
+CREATE TABLE rhe_dados_lic_premio_pend_historico(
+    ROWID bigint IDENTITY,
+    NUMFUNC int NULL,
+    NUMVINC int NULL,
+    DTINI date NULL,
+    DTFIM date NULL,
+    TOTALDIAS int NULL,
+    DIAS_TIRADOS int NULL,
+    DIAS_VENDIDOS int NULL,
+    CONT_DOBRO int NULL,
+    SALDO int NULL,
+    CREATED datetime NULL,
+    LASTUPDATED datetime NULL,
+    primary key (ROWID)
+);
