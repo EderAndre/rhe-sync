@@ -2,6 +2,7 @@ package br.rs.gov.defensoria.rhe.schedulers
 
 import br.rs.gov.defensoria.rhe.service.FilesService
 import io.micronaut.context.annotation.Value
+import io.micronaut.scheduling.annotation.Scheduled
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.io.File
@@ -12,18 +13,24 @@ import java.time.format.DateTimeFormatter
 
 @Singleton
 class Files(
-    @Value("\${worker.jobs.sync.local-dir}") private var localDir: String
+    @Value("\${worker.jobs.sync.local-files-dir}") private var localDir: String,
+    @Value("\${worker.jobs.sync.sended-dir}") private var sendedDir: String,
+    @Value("\${worker.jobs.sync.rsync-dir}") private var rsyncDir: String,
+    @Value("\${worker.jobs.sync.waiting-dir}") private var waitingDir: String,
+    @Value("\${worker.jobs.sync.normalized-dir}") private var normalDir: String,
+    @Value("\${worker.jobs.sync.aborted-dir}") private var abortDir: String,
+
 ) {
     @Inject
     private lateinit var filesSv: FilesService
 
-   // @Scheduled(cron = "0 1/1 * * * *")
+    @Scheduled(cron = "0 1/1 * * * *")
     fun syncFiles() {
         println(
             "**************************INICIANDO DETECÇÃO DE ARQUIVOS NOVOS****************************************"
         )
-        val syncFiles: File = File("${localDir}${File.separator}rsync")
-        val sendedFiles: List<String> = File("${localDir}${File.separator}sended").listFiles().map { it.name }
+        val syncFiles: File = File("${localDir}${rsyncDir}")
+        val sendedFiles: List<String> = File("${localDir}${sendedDir}").listFiles().map { it.name }
         val date: String = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
         syncFiles.listFiles().forEach {
             val yesterday = LocalDateTime.now().minusDays(1).dayOfMonth
@@ -35,29 +42,27 @@ class Files(
                 &&
                 it.name !in sendedFiles
             ) {
-                println(
-                    "${it.lastModified()} +++++++++${
-                        LocalDateTime.of(year, month, yesterday, 23, 0).toInstant(ZoneOffset.UTC).epochSecond * 1000
-                    }"
-                )
-                it.copyTo(File("${localDir}${File.separator}sended${File.separator}${it.name}"))
-                it.copyTo(File("${localDir}${File.separator}waiting${File.separator}${it.name}"))
+                it.copyTo(File("${localDir}${File.separator}${sendedDir}${it.name}"))
+                it.copyTo(File("${localDir}${File.separator}${waitingDir}${it.name}"))
             }
         }
     }
 
-    // @Scheduled(cron = "0 1/1 * * * *")
+    @Scheduled(fixedDelay = "2s")
     fun normalizaArquivos() {
-        val waitingFiles: File = File("${localDir}${File.separator}waiting")
+        println(
+            ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   INICIANDO NORMALIZAÇÃO DE ARQUIVOS    <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+        )
+        val waitingFiles: File = File("${localDir}${waitingDir}")
         val date: String = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
         waitingFiles.listFiles().forEach {
-
+            println("[+] Trying: ${it.name}")
             val type = filesSv.detectType(it.name)
 
             if (type != null) {
                 filesSv.generateFileNormalized(
-                    "${localDir}${File.separator}waiting" + File.separator + it.name,
-                    "${localDir}${File.separator}normalized" + File.separator + it.name,
+                    "${localDir}${sendedDir}${it.name}",
+                    "${localDir}${normalDir}${it.name}",
                     type
                 )
                 it.delete()
@@ -66,7 +71,7 @@ class Files(
             } else {
                 it.copyTo(
                     File(
-                        "${localDir}${File.separator}aborted${File.separator}_${
+                        "${localDir}${abortDir}_${
                             LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYYMMdd_HHmmss"))
                         }_${it.name}"
                     )

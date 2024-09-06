@@ -52,4 +52,12 @@ logger:
 worker:
   jobs:
     sync:
-      local-dir: D:\MIG\DPE\DEV\file
+      local-files-dir: D:\MIG\DPE\DEV\file
+      aborted-dir: aborted\
+      normal-dir: normalized\
+      normal-waiting-dir: normalized-waiting\
+      rsync-dir: rsync\
+      sended-dir: sended\
+      raw-waiting-dir: waiting\
+      logs-dir: log\
+      notification-dir: notification\

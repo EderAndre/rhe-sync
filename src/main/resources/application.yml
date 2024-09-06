@@ -1,6 +1,7 @@
 micronaut:
   application:
     name: rhe-sync
+    version: ${APP_VERSION:undefined}
   server:
     port: ${SERVER_PORT:8080}
     netty:
@@ -44,12 +45,29 @@ jpa:
 logger:
   levels:
     root: DEBUG
-    #    io: TRACE
-    # io: DEBUG
-#      micronaut:
-#        context:
-#          condition: TRACE
 worker:
   jobs:
     sync:
-      local-dir: /app/files
+      local-files-dir: /app/files/
+      aborted-dir: aborted/
+      normal-dir: normalized/
+      normal-waiting-dir: normalized-waiting/
+      rsync-dir: rsync/
+      sended-dir: sended/
+      raw-waiting-dir: waiting/
+      logs-dir: log/
+      notification-dir: notification/
+    notification:
+      email-from: adm-info@defensoria.rs.def.br
+      email-to: eder-soares@defensoria.rs.def.br
+      email-var-status: %_status_%
+      email-subject: Rhe-Sync[%_status_%]
+javamail:
+  protocol: smtp
+  properties.mail.smtp:
+    default-encoding: UTF-8
+    from: "adm-info@defensoria.rs.def.br"
+    host: smtp-infra.defpub.local
+    port: 25
+    auth: false
+    starttls.enable: false

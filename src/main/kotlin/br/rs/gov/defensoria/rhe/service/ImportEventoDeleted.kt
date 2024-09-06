@@ -55,9 +55,14 @@ open class ImportEventoDeleted {
                         )
                         dataInsert.add(data)
                     } else {
-                        val status = if (registry.isPresent) "EVENT_DELETED" else "EVENT_NOT_FOUND"
-                        val eventoDeleted = registry.get()
-                        eventoRepo.delete(eventoDeleted)
+                        var status ="EVENT_NOT_FOUND"
+                        if (registry.isPresent){
+                            status = "EVENT_DELETED"
+                            val eventoDeleted = registry.get()
+                            eventoRepo.delete(eventoDeleted)
+                        }
+
+
                         var data = EventoDeleted(
                             NUMEV = it["NUMEV"]?.toInt() ?: 0,
                             OPERACAO = it["OPERACAO"],

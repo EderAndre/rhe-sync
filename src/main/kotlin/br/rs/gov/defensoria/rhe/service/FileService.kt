@@ -1,14 +1,18 @@
 package br.rs.gov.defensoria.rhe.service
 
 
-import br.rs.gov.defensoria.rhe.utils.UriDiscovery
 import br.rs.gov.defensoria.rhe.utils.FileUtils
 import br.rs.gov.defensoria.rhe.utils.Type
 import br.rs.gov.defensoria.rhe.utils.TypesDefinition
+import io.micronaut.context.annotation.Value
 import jakarta.inject.Singleton
+import java.io.File
 
 @Singleton
-class FilesService {
+class FilesService(
+    @Value("\${worker.jobs.sync.normalized-dir}") private var normalDir: String,
+    @Value("\${worker.jobs.sync.normalized-waiting-dir}") private var normalWaitingDir: String
+) {
     private val type = TypesDefinition()
 
     fun detectType(fileName: String): Type? {
@@ -49,20 +53,31 @@ class FilesService {
         }
     }
 
-    fun generateCsvFromTxtNormalized(fileOrigin: String, fileDestiny: String, typeSelected: Type): Boolean {
+    private fun generateCsvFromTxtNormalized(fileOrigin: String, fileDestiny: String, typeSelected: Type): Boolean {
         var updatedFileDestiny = fileDestiny.replace(".TXT", "_NORMALIZED.CSV")
         val res = FileUtils().normalizeFileTxt(
             fileOrigin,
             typeSelected.columnLimits!!.toList(),
             typeSelected.columnLabels!!.toList()
         )
+        copyNormalized(updatedFileDestiny, res)
         return FileUtils().createFile(updatedFileDestiny, res).isNotEmpty()
     }
 
-    fun generateCsvFromCsvNormalized(fileOrigin: String, fileDestiny: String): Boolean {
-        var updatedFileDestiny = fileDestiny.replace(".CSV", "_NORMALIZED.CSV")
+    private fun generateCsvFromCsvNormalized(fileOrigin: String, fileDestiny: String): Boolean {
+        val updatedFileDestiny = fileDestiny.replace(".CSV", "_NORMALIZED.CSV")
         val res = FileUtils().normalizeFileCsv(fileOrigin)
+        copyNormalized(updatedFileDestiny, res)
         return FileUtils().createFile(updatedFileDestiny, res).isNotEmpty()
+    }
+
+    private fun copyNormalized(normalizedFileDestiny: String, content: String) {
+        val updatedFileDestiny =
+            normalizedFileDestiny.replace(
+                "${File.separator}${normalDir}",
+                "${File.separator}${normalWaitingDir}"
+            )
+        FileUtils().createFile(updatedFileDestiny, content)
     }
 }
 
